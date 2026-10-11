@@ -74,67 +74,55 @@ private:
             }
         }
         
-        // Fire is super effective against grass, ice
+        // Based on the problem description, here are the key relationships:
+        
+        // Fire: super effective against grass, ice; not very effective against water, fire
         typeChart["fire"]["grass"] = 2.0f;
         typeChart["fire"]["ice"] = 2.0f;
-        
-        // Fire is not very effective against water, fire
         typeChart["fire"]["water"] = 0.5f;
         typeChart["fire"]["fire"] = 0.5f;
         
-        // Water is super effective against fire, ground, rock
+        // Water: super effective against fire, ground; not very effective against water, grass
         typeChart["water"]["fire"] = 2.0f;
         typeChart["water"]["ground"] = 2.0f;
-        
-        // Water is not very effective against water, grass, dragon
         typeChart["water"]["water"] = 0.5f;
         typeChart["water"]["grass"] = 0.5f;
         
-        // Grass is super effective against water, ground, rock
+        // Grass: super effective against water, ground; not very effective against fire, grass, flying
         typeChart["grass"]["water"] = 2.0f;
         typeChart["grass"]["ground"] = 2.0f;
-        
-        // Grass is not very effective against fire, grass, poison, flying, bug, dragon, steel
         typeChart["grass"]["fire"] = 0.5f;
         typeChart["grass"]["grass"] = 0.5f;
         typeChart["grass"]["flying"] = 0.5f;
         
-        // Electric is super effective against water, flying
+        // Electric: super effective against water, flying; not very effective against electric, grass
         typeChart["electric"]["water"] = 2.0f;
         typeChart["electric"]["flying"] = 2.0f;
-        
-        // Electric is not very effective against electric, grass, dragon
         typeChart["electric"]["electric"] = 0.5f;
         typeChart["electric"]["grass"] = 0.5f;
-        
         // Electric has no effect against ground
         typeChart["electric"]["ground"] = 0.0f;
         
-        // Ice is super effective against grass, ground, flying, dragon
+        // Ice: super effective against grass, ground, flying; not very effective against fire, water, ice
         typeChart["ice"]["grass"] = 2.0f;
         typeChart["ice"]["ground"] = 2.0f;
         typeChart["ice"]["flying"] = 2.0f;
-        
-        // Ice is not very effective against fire, water, ice, steel
         typeChart["ice"]["fire"] = 0.5f;
         typeChart["ice"]["water"] = 0.5f;
         typeChart["ice"]["ice"] = 0.5f;
         
-        // Ground is super effective against fire, electric, poison, rock, steel
+        // Ground: super effective against fire, electric, ice; not very effective against grass
         typeChart["ground"]["fire"] = 2.0f;
         typeChart["ground"]["electric"] = 2.0f;
-        
-        // Ground is not very effective against grass, bug
+        typeChart["ground"]["ice"] = 2.0f;
         typeChart["ground"]["grass"] = 0.5f;
-        
         // Ground has no effect against flying
         typeChart["ground"]["flying"] = 0.0f;
         
-        // Flying is super effective against grass, fighting, bug
+        // Flying: super effective against grass; not very effective against electric, ice
         typeChart["flying"]["grass"] = 2.0f;
-        
-        // Flying is not very effective against electric, rock, steel
         typeChart["flying"]["electric"] = 0.5f;
+        typeChart["flying"]["ice"] = 0.5f;
     }
     
     bool isValidName(const char *name) const {
@@ -408,7 +396,6 @@ public:
         const Pokemon* starter = &it->second;
         
         std::set<int> owned;
-        std::set<int> canCatch;
         
         // Initially own the starter
         owned.insert(starter->id);
@@ -416,13 +403,14 @@ public:
         bool newCatch = true;
         while (newCatch) {
             newCatch = false;
+            std::set<int> newlyCaught;
             
             // Try to catch all Pokemon with current owned ones
             for (const auto& pair : pokemonMap) {
                 int targetId = pair.first;
                 const Pokemon& target = pair.second;
                 
-                if (owned.find(targetId) != owned.end() || canCatch.find(targetId) != canCatch.end()) {
+                if (owned.find(targetId) != owned.end()) {
                     continue;
                 }
                 
@@ -434,19 +422,19 @@ public:
                     for (const auto& attackType : attacker.types) {
                         float damage = attack(attackType.c_str(), targetId);
                         if (damage >= 2.0f) {
-                            canCatch.insert(targetId);
+                            newlyCaught.insert(targetId);
                             newCatch = true;
                             break;
                         }
                     }
-                    if (canCatch.find(targetId) != canCatch.end()) {
+                    if (newlyCaught.find(targetId) != newlyCaught.end()) {
                         break;
                     }
                 }
             }
             
             // Add newly caught Pokemon to owned
-            for (int newId : canCatch) {
+            for (int newId : newlyCaught) {
                 owned.insert(newId);
             }
         }
