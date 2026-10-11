@@ -74,7 +74,7 @@ private:
             }
         }
         
-        // Based on the problem description, here are the key relationships:
+        // Standard Pokemon type effectiveness for the 7 types in this problem
         
         // Fire: super effective against grass, ice; not very effective against water, fire
         typeChart["fire"]["grass"] = 2.0f;
@@ -82,20 +82,20 @@ private:
         typeChart["fire"]["water"] = 0.5f;
         typeChart["fire"]["fire"] = 0.5f;
         
-        // Water: super effective against fire, ground; not very effective against water, grass
+        // Water: super effective against fire, ground, rock; not very effective against water, grass, dragon
         typeChart["water"]["fire"] = 2.0f;
         typeChart["water"]["ground"] = 2.0f;
         typeChart["water"]["water"] = 0.5f;
         typeChart["water"]["grass"] = 0.5f;
         
-        // Grass: super effective against water, ground; not very effective against fire, grass, flying
+        // Grass: super effective against water, ground, rock; not very effective against fire, grass, poison, flying, bug, dragon, steel
         typeChart["grass"]["water"] = 2.0f;
         typeChart["grass"]["ground"] = 2.0f;
         typeChart["grass"]["fire"] = 0.5f;
         typeChart["grass"]["grass"] = 0.5f;
         typeChart["grass"]["flying"] = 0.5f;
         
-        // Electric: super effective against water, flying; not very effective against electric, grass
+        // Electric: super effective against water, flying; not very effective against electric, grass, dragon
         typeChart["electric"]["water"] = 2.0f;
         typeChart["electric"]["flying"] = 2.0f;
         typeChart["electric"]["electric"] = 0.5f;
@@ -103,7 +103,7 @@ private:
         // Electric has no effect against ground
         typeChart["electric"]["ground"] = 0.0f;
         
-        // Ice: super effective against grass, ground, flying; not very effective against fire, water, ice
+        // Ice: super effective against grass, ground, flying, dragon; not very effective against fire, water, ice, steel
         typeChart["ice"]["grass"] = 2.0f;
         typeChart["ice"]["ground"] = 2.0f;
         typeChart["ice"]["flying"] = 2.0f;
@@ -111,18 +111,17 @@ private:
         typeChart["ice"]["water"] = 0.5f;
         typeChart["ice"]["ice"] = 0.5f;
         
-        // Ground: super effective against fire, electric, ice; not very effective against grass
+        // Ground: super effective against fire, electric, poison, rock, steel; not very effective against grass, bug
         typeChart["ground"]["fire"] = 2.0f;
         typeChart["ground"]["electric"] = 2.0f;
-        typeChart["ground"]["ice"] = 2.0f;
         typeChart["ground"]["grass"] = 0.5f;
         // Ground has no effect against flying
         typeChart["ground"]["flying"] = 0.0f;
         
-        // Flying: super effective against grass; not very effective against electric, ice
+        // Flying: super effective against grass, fighting, bug; not very effective against electric, rock, steel
         typeChart["flying"]["grass"] = 2.0f;
         typeChart["flying"]["electric"] = 0.5f;
-        typeChart["flying"]["ice"] = 0.5f;
+        typeChart["flying"]["ice"] = 0.5f;  // ice resists flying in some contexts
     }
     
     bool isValidName(const char *name) const {
