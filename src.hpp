@@ -9,14 +9,14 @@
 
 class BasicException {
 protected:
-    const char *message;
+    std::string message;
 
 public:
     explicit BasicException(const char *_message) : message(_message) {
     }
 
     virtual const char *what() const {
-        return message;
+        return message.c_str();
     }
 };
 
@@ -243,7 +243,8 @@ public:
     bool pokeAdd(const char *name, int id, const char *types) {
         // Check for argument errors first
         if (!isValidName(name)) {
-            throw ArgumentException(("Argument Error: PM Name Invalid (" + std::string(name) + ")").c_str());
+            std::string errorMsg = "Argument Error: PM Name Invalid (" + std::string(name) + ")";
+            throw ArgumentException(errorMsg.c_str());
         }
         
         if (!isValidTypes(types)) {
@@ -253,7 +254,8 @@ public:
             
             while (std::getline(ss, type, '#')) {
                 if (!type.empty() && !isValidType(type)) {
-                    throw ArgumentException(("Argument Error: PM Type Invalid (" + type + ")").c_str());
+                    std::string errorMsg = "Argument Error: PM Type Invalid (" + type + ")";
+                    throw ArgumentException(errorMsg.c_str());
                 }
             }
         }
@@ -304,7 +306,8 @@ public:
             
             while (std::getline(ss, type, '#')) {
                 if (!type.empty() && !isValidType(type)) {
-                    throw ArgumentException(("Argument Error: PM Type Invalid (" + type + ")").c_str());
+                    std::string errorMsg = "Argument Error: PM Type Invalid (" + type + ")";
+                    throw ArgumentException(errorMsg.c_str());
                 }
             }
         }
@@ -362,7 +365,8 @@ public:
 
     float attack(const char *type, int id) const {
         if (!isValidType(type)) {
-            throw ArgumentException(("Argument Error: PM Type Invalid (" + std::string(type) + ")").c_str());
+            std::string errorMsg = "Argument Error: PM Type Invalid (" + std::string(type) + ")";
+            throw ArgumentException(errorMsg.c_str());
         }
         
         auto it = pokemonMap.find(id);
